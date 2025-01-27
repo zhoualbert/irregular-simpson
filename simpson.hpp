@@ -14,15 +14,30 @@
 #include <cassert>
 
 template<typename Float>
+Float trapezoid(std::vector<Float> &x, std::vector<Float> &y) {
+  Float res = 0;
+  assert(x.size() == y.size());
+  for (size_t i=1; i<x.size(); ++i) {
+    assert(x[i]>x[i-1]);
+    res += 0.5*(y[i]+y[i-1])*(x[i]-x[i-1]);
+  }
+  return res;
+}
+
+template<typename Float>
 Float simpson(std::vector<Float>& x, std::vector<Float>& y) {
+#ifndef NDEBUG
   std::cout.precision(10);
   std::cout << "Integrating data using simpson\n";
   std::cout << "x values go from " << x.front() << " to " << x.back() << std::endl;
   std::cout << "y values go from " << y.front() << " to " << y.back() << std::endl;
+#endif
 
   if (x.size() != y.size()) {
     std::cerr << "x and y data not same size" << std::endl;
     return 0;
+  } else if (x.size() == 2) { // Fall back to trapezoid
+    return trapezoid(x, y);
   }
 
   std::vector<Float> h;
